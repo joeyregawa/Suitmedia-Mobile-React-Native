@@ -1,8 +1,11 @@
 import React, {Component, useEffect,useState} from "react";
-import { Text,View,FlatList, StyleSheet, Image,RefreshControl, ActivityIndicator } from "react-native";
+import { Text,View,FlatList, StyleSheet, Image,RefreshControl, ActivityIndicator, Dimensions } from "react-native";
 import axios from "axios";
 import { useDispatch,useSelector } from "react-redux"
 import {asycnGetUsers, isLoading} from '../redux/action/userAction'
+import MapView, {Callout, Marker }  from 'react-native-maps';
+
+const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
 
 const wait = (timeout) => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -143,8 +146,9 @@ export default class User extends Component {
   }
 
   render (){
-    // console.log(this.state.data,"2342344234")
-    return (
+    console.log(this.state.data,"2342344234")
+    return this.props.userlist ? (
+
         <FlatList
         style={styles.container}
         data = {this.state.data}
@@ -160,7 +164,32 @@ export default class User extends Component {
           />
         }
         />
-     
+    ) :
+    (
+      <View>
+        <MapView style={styles.map}>
+          {this.state?.coordinatData.map ((element,index)=>{
+            return (
+            // console.log(element)
+            <View key={index}>
+            <Marker 
+                coordinate={{
+                  latitude: element?.latitide,
+                  longitude: element?.longitude,
+                }}
+                pinColor="red"
+                >
+              <Callout>
+                <Image source={{uri : this.state.data[index]?.avatar}} style={{width:48, height:48, borderRadius: 100, marginLeft: 20}}/>
+                <Text>{this.state.data[index]?.first_name} {this.state.data[index]?.last_name}</Text>
+                </Callout>
+            </Marker>
+            </View>
+         
+            )
+          })}
+        </MapView>
+      </View>
     )
   }
 }
@@ -190,5 +219,9 @@ const styles = StyleSheet.create ({
   loader: {
     marginTop: 10,
     alignItems: 'center'
+  },
+  map : {
+    width : windowWidth,
+    aspectRatio : windowWidth/windowHeight
   }
 })
