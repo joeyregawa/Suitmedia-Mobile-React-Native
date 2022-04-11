@@ -1,11 +1,13 @@
 import React, {Component, useEffect,useState} from "react";
-import { Text,View,FlatList, StyleSheet, Image,RefreshControl, ActivityIndicator, Dimensions } from "react-native";
+import { Text,View,FlatList, StyleSheet, Image,RefreshControl, ActivityIndicator, Dimensions, TouchableOpacity,  Alert, Modal,Pressable, } from "react-native";
 import axios from "axios";
 import { useDispatch,useSelector } from "react-redux"
 import {asycnGetUsers, isLoading} from '../redux/action/userAction'
 import MapView, {Callout, Marker }  from 'react-native-maps';
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
+
+const TAB_BAR_HEIGHT = 49;
 
 const wait = (timeout) => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -80,7 +82,8 @@ export default class User extends Component {
           latitide:-6.150406, 
           longitude:106.840946, 
         }
-      ]
+      ],
+      modalVisible : false
     }
   }
   
@@ -145,8 +148,16 @@ export default class User extends Component {
     this.setState({page:this.state.page + 1, isLoading: true}, this.getData)
   }
 
+  renderContent = () => {
+    return (
+      <View>
+        <Text>Get directions to your location</Text>
+      </View>
+    )
+  }
+
   render (){
-    console.log(this.state.data,"2342344234")
+    // console.log(this.state.data,"2342344234")
     return this.props.userlist ? (
 
         <FlatList
@@ -172,7 +183,7 @@ export default class User extends Component {
             return (
             // console.log(element)
             <View key={index}>
-            <Marker 
+            <Marker onPress ={()=> this.setState({modalVisible:true})}
                 coordinate={{
                   latitude: element?.latitide,
                   longitude: element?.longitude,
@@ -181,11 +192,40 @@ export default class User extends Component {
                 >
               <Callout>
                 <Image source={{uri : this.state.data[index]?.avatar}} style={{width:48, height:48, borderRadius: 100, marginLeft: 20}}/>
-                <Text>{this.state.data[index]?.first_name} {this.state.data[index]?.last_name}</Text>
+                <Text style= {{alignContent: "center", justifyContent: "center", fontWeight: "400", alignItems: "center", textAlign: "center", fontSize: 15, marginBottom: 10}}>{this.state.data[index]?.first_name} {this.state.data[index]?.last_name}</Text>
+                <TouchableOpacity style={styles.buttonInput} onPress={()=> this.props.navigation.navigate("Home", {data: this.data.state[index]})}>
+                  <Text style={{color: "white",textAlign: "center", fontWeight: "400"}}>Select User</Text>
+                </TouchableOpacity>
                 </Callout>
+                {/* <Callout> */}
+                 {/* <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={this.state.modalVisible}
+                    onRequestClose={() => {
+                      Alert.alert("Modal has been closed.");
+                      this.setState({modalVisible : !this.state.modalVisible});
+                    }}
+                  >
+                  <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                    <Image source={{uri : this.state.data[index]?.avatar}} style={{width:48, height:48, borderRadius: 100, marginLeft: 20}}/>
+                        <Text style= {{alignContent: "center", justifyContent: "center", fontWeight: "400", alignItems: "center", textAlign: "center", fontSize: 15, marginBottom: 10}}>{this.state.data[index]?.first_name} {this.state.data[index]?.last_name}</Text>
+                        <TouchableOpacity style={styles.buttonInput} onPress={()=> this.props.navigation.navigate("Home", {data: this.data.state[index]})}>
+                          <Text style={{color: "white",textAlign: "center", fontWeight: "400"}}>Select User</Text>
+                        </TouchableOpacity>
+                      <Pressable
+                        style={[styles.button, styles.buttonClose]}
+                        onPress={() => this.setState({modalVisible:false})}
+                      >
+                        <Text style={styles.textStyle}>Close Modal</Text>
+                      </Pressable>
+                    </View>
+                  </View>
+                </Modal> */}
+                {/* </Callout> */}
             </Marker>
             </View>
-         
             )
           })}
         </MapView>
@@ -223,5 +263,55 @@ const styles = StyleSheet.create ({
   map : {
     width : windowWidth,
     aspectRatio : windowWidth/windowHeight
-  }
+  },
+  buttonInput: {
+    alignSelf: "center",
+    textAlign: "center",
+    justifyContent: "center",
+    width : windowWidth * 0.8,
+    backgroundColor: "#2B637B",
+    height: windowHeight* 0.05,
+    borderRadius: 10
+  }, 
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "flex-end",
+    marginTop: 22
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center"
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center"
+  }, 
 })

@@ -1,23 +1,12 @@
 import React, {Component } from 'react'
 import {View, Button,Text, StyleSheet, Dimensions, Image, TouchableOpacity} from "react-native"
 
-// class Home extends Component {
-//   render() {
-//     return (
-//       <View>
-//         <Text>Home</Text>
-//         <Button title='Go to Login' onPress={()=>this.props.navigation.navigate('Login')}></Button>
-//       </View>
-//     );
-//   }
-// }
-
-// export default Home;
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
 
 export default function Home ({navigation, route}) {
   let name = route.params.name
+  console.log(route.params)
   console.log(name)
   return (
     <View>

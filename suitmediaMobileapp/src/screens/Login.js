@@ -2,41 +2,6 @@ import React, {Component, useEffect, useState } from 'react'
 import {View,Text, Button, StyleSheet,TextInput, Alert, Modal,Pressable, TouchableOpacity, Dimensions, ImageBackground  } from "react-native"
 import { Entypo } from '@expo/vector-icons'; 
 
-
-// class Login extends Component {
-//   constructor(props){
-//     super(props);
-//     this.state = {
-//       inputPalindrom : '',
-//       isPalindrom : false
-//     }
-//   }
-//   render () {
-//     const submitHandler = (event) => {
-//       event.preventDefault()
-//       console.log(this.state.inputPalindrom)
-
-//     }
-//     return (
-//       <View>
-//         <Text>Hello, I am your cat!</Text>
-//         <Button title='Go to Home' onPress={()=>this.props.navigation.navigate('Home')}></Button>
-//         <View>
-//           <TextInput
-//           style={styles.input}
-//           onChangeText={(inputValue,inputIndex) => this.state.inputPalindrom(inputValue)}
-//           // value={text}
-//         />
-//         <Button title="checkPalindrom" mt="2" colorScheme="indigo" onPress={submitHandler}> Masuk </Button>
-//         </View>
-      
-//       </View>
-//     );
-//   }
-// }
-
-// export default Login;
-
 const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
 export default function Login ({navigation}){
   const [inputPalindrom,SetInputPalindrom] = useState('')
